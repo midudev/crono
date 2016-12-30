@@ -1,8 +1,8 @@
 (function (root, factory) {
   'use strict'
 
-  if (typeof define === 'function' && define.amd) {
-    define(factory)
+  if (typeof window.define === 'function' && window.define.amd) {
+    window.define(factory)
   } else {
     root.crono = factory()
   }
@@ -36,8 +36,8 @@
     s = s.replace(/\.\d+/, '') // remove milliseconds
     s = s.replace(/-/, '/').replace(/-/, '/')
     s = s.replace(/T/, ' ').replace(/Z/, ' UTC')
-    s = s.replace(/([\+\-]\d\d)\:?(\d\d)/, ' $1$2') // -04:00 -> -0400
-    s = s.replace(/([\+\-]\d\d)$/, ' $100') // +09 -> +0900
+    s = s.replace(/([+-]\d\d):?(\d\d)/, ' $1$2') // -04:00 -> -0400
+    s = s.replace(/([+-]\d\d)$/, ' $100') // +09 -> +0900
     return new Date(s)
   }
 
@@ -57,7 +57,10 @@
     var years = days / 365
 
     function substitute (stringOrFunction, number) {
-      var string = typeof stringOrFunction === 'string' ? stringOrFunction : stringOrFunction(number, distanceMillis)
+      var string = typeof stringOrFunction === 'string'
+                    ? stringOrFunction
+                    : stringOrFunction(number, distanceMillis)
+
       var value = ($l.numbers && $l.numbers[number]) || number
       return string.replace(/%d/i, value)
     }
@@ -78,6 +81,7 @@
     if ($l.wordSeparator === undefined) { separator = ' ' }
     return [prefix, words, suffix].join(separator).trim()
   }
+
   // create a variable crono
   return function (selector, options) {
     options = options || defaultOptions
